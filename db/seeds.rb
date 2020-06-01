@@ -18,7 +18,7 @@ Marca.create([
     
     { nombre: "Lg", descripcion: "fnejhrfbwjhrb", slogan: "cwj erhbwjeh", ciudad: 'Neiva', 
       departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul",
-      email: "raomir@gmail.com", radio_de_cobertura: 4, social_media: "{[facebook: 'raomir', youtube:'raomir14']}" categorium_id: 4}, 
+      email: "raomir@gmail.com", radio_de_cobertura: 4, social_media: "{[facebook: 'raomir', youtube:'raomir14']}", categorium_id: 4}, 
 
     { nombre: "Lacoste", descripcion: "fnejhrfbwjhrb", slogan: "cwj erhbwjeh", ciudad: 'Neiva', 
       departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul",
