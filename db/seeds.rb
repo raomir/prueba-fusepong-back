@@ -5,24 +5,24 @@
 #
 Marca.create([
     { nombre: "Adidas", descripcion: "fnejhrfbwjhrb", slogan: "cwj erhbwjeh", ciudad: 'Neiva', 
-      departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul"
+      departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul",
       email: "raomir@gmail.com", radio_de_cobertura: 4, social_media: "{[facebook: 'raomir', youtube:'raomir14']}"}, 
     
     { nombre: "Lacoste", descripcion: "fnejhrfbwjhrb", slogan: "cwj erhbwjeh", ciudad: 'Neiva', 
-      departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul"
+      departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul",
       email: "raomir@gmail.com", radio_de_cobertura: 4, social_media: "{[facebook: 'raomir', youtube:'raomir14']}"}, 
 
     { nombre: "Samsung", descripcion: "fnejhrfbwjhrb", slogan: "cwj erhbwjeh", ciudad: 'Neiva', 
-      departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul"
+      departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul",
       email: "raomir@gmail.com", radio_de_cobertura: 4, social_media: "{[facebook: 'raomir', youtube:'raomir14']}"}, 
     
     { nombre: "Lg", descripcion: "fnejhrfbwjhrb", slogan: "cwj erhbwjeh", ciudad: 'Neiva', 
-      departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul"
+      departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul",
       email: "raomir@gmail.com", radio_de_cobertura: 4, social_media: "{[facebook: 'raomir', youtube:'raomir14']}"}, 
 
     { nombre: "Lacoste", descripcion: "fnejhrfbwjhrb", slogan: "cwj erhbwjeh", ciudad: 'Neiva', 
-      departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul"
-      email: "raomir@gmail.com", radio_de_cobertura: 4, social_media: "{[facebook: 'raomir', youtube:'raomir14']}"}, 
+      departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul",
+      email: "raomir@gmail.com", radio_de_cobertura: 4, social_media: "{[facebook: 'raomir', youtube:'raomir14']}"} 
 ])
 
 Categorium.create([
@@ -30,5 +30,5 @@ Categorium.create([
     { nombre: "Vehículos"},
     { nombre: "Tecnología"},
     { nombre: "Inmuebles"},
-    { nombre: "Moda"},
+    { nombre: "Moda"}
 ])
