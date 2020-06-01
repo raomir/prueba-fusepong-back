@@ -1,4 +1,4 @@
 class CategoriaProducto < ApplicationRecord
-    has_many :categoriums
-    has_many :productos
+    belongs_to :categorium
+    belongs_to :producto
 end

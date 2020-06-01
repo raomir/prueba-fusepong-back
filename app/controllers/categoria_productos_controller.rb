@@ -10,7 +10,7 @@ class CategoriaProductosController < ApplicationController
 
   # GET /categoria_productos/1
   def show
-    render json: @categoria_producto
+    render json: @categoria_producto, categorias: true
   end
 
   # POST /categoria_productos

@@ -10,53 +10,17 @@ class ProductosController < ApplicationController
 
   # GET /productos/1
   def show
-    render json: @producto
+
+    render json: @producto, categorias: true
   end
 
   # POST /productos
   def create
-    #Se registra las categorias
-    @categoria
-    producto_params['categoria'].each.with_index do |n|
-      @categoria = guardarCategorias(n)
+    @producto
+    producto_params['producto'].each do |n|
+      @producto = guardarProductos(n, producto_params)
     end
-
-    if @categoria then
-      #Se registra las marcas
-      @marca
-      producto_params['marca'].each do |n|
-        @marca = guardarMarcas(n)
-      end
-
-      if @marca then
-        #Se registra los productos
-        
-        @producto
-        producto_params['producto'].each do |n|
-          @producto = guardarProductos(n)
-        end
-
-        if @producto then
-          #Se registra las categorias_productos
-          @categoriaProducto
-          producto_params['categoria_producto'].each do |n|
-            @categoriaProducto = guardarCategoriasProductos(n)
-          end
-  
-          if @categoriaProducto then
-            render json: true, status: :created
-          else
-            render json: 'error en categorias productos'
-          end
-        else
-          render json: 'error en productos'
-        end
-      else
-        render json: 'error en marca'
-      end
-    else
-      render json: 'error en categoria'
-    end
+    render json: @producto
   end
 
   private
@@ -65,72 +29,143 @@ class ProductosController < ApplicationController
       @producto = Producto.where(marca_id: params[:id])
     end
 
+    def set_categoria (nombre)
+      @categorias = Categorium.where(nombre: nombre)
+      if @categorias.exists? then 
+        return @categorias.first
+      else
+        return false
+      end
+    end
+
     # Only allow a trusted parameter "white list" through.
     def producto_params
       params.permit(
         data: {
-          categoria: [ :id,:nombre ],
           producto: [ 
             :id, :nombre, :tipo_producto, :descripcion, :visible, :score, :referencia, 
-            :precio, :cantidad,  :on_sale, :precio_anterior, :marca_id, :composicion, :categoria_id],
-          marca: [
-            :id, :nombre, :descripcion, :slogan, :ciudad, :departamento, :pais, :visible,
-            :color_principal, :color_secundario, :email, :radio_de_cobertura, :categorium_id, :social_media
-          ],
-          categoria_producto: [:id, :categorium_id, :producto_id]
-        }
+            :precio, :cantidad,  :on_sale, :precio_anterior, :marca_id, :composicion],
+            categorias: []
+          }
         ).require(:data)
     end
 
-    # Se valida primero si ya se encuentra una categoria con el mismo id
+    # Se valida primero si ya se encuentra un producto con el nombre del producto
     # si es así, entonces se actualiza el dato
     # de lo contrario, se crea uno nuevo
-    def guardarCategorias (data)
+    def guardarProductos (data, categoria_producto)
       begin
-        @categoria = Categorium.find(data[:id])
-        return @categoria.update(data)
-      rescue ActiveRecord::RecordNotFound
-        @categorium = Categorium.new(data)
-        return @categorium.save
+        @producto = Producto.where(nombre: data[:nombre])
+
+        if @producto.exists? then
+          if @producto.update(data) then
+            @producto = @producto.first[:id]
+            return actualizarCategoriasProductos(@producto, categoria_producto)
+          else
+            return 'No se pudo actualizar el producto'
+          end
+        else 
+          CategoriaProducto.transaction do
+            @categoriaProducto
+            @producto = Producto.new(data)
+
+            if @producto.save() then
+              return guardarCategoriasProductos(@producto[:id], categoria_producto)
+            else
+              return 'No se pudo registrar el producto'
+            end
+          end
+        end
+      rescue ActiveRecord::RecordNotSaved => e
+        raise ActiveRecord::Rollback
+        return e
+      rescue ActiveRecord::RecordInvalid => e
+        raise ActiveRecord::Rollback
+        return e
       end
     end
 
-    # Se valida primero si ya se encuentra una marca con el mismo id
-    # si es así, entonces se actualiza el dato
-    # de lo contrario, se crea uno nuevo
-    def guardarMarcas (data)
+    # Se arma el json con los ids del producto y de la categoria para guardarlos en la tabla
+    # categoria_productos y luego se procede a guardar los datos
+    def guardarCategoriasProductos (idProducto, categoria_producto)
       begin
-        @marca = Marca.find(data[:id])
-        return @marca.update(data)
-      rescue ActiveRecord::RecordNotFound
-        @marca = Marca.new(data)
-        return @marca.save
+        CategoriaProducto.transaction do
+          categoria_producto[:categorias].each do |categoria|
+              @categoriasProductos = armarDatos(categoria, idProducto)
+              if @categoriasProductos != false then
+                @categoriaProducto = CategoriaProducto.new(@categoriasProductos)
+                if @categoriaProducto.save() == false then 
+                  return 'No se pudo registrar las categorías del producto'
+                end
+              else 
+                return 'No se encontró la categoría' + ' ' + categoria + ' registrada'
+              end
+          end
+          return 'Registro satisfactorio'
+        end
+      rescue ActiveRecord::RecordNotSaved => e
+        raise ActiveRecord::Rollback
+        return e
+      rescue ActiveRecord::RecordInvalid => e
+        raise ActiveRecord::Rollback
+        return e
       end
     end
 
-    # Se valida primero si ya se encuentra un producto con el mismo id
-    # si es así, entonces se actualiza el dato
-    # de lo contrario, se crea uno nuevo
-    def guardarProductos (data)
+    # Se valida primero si ya existe la categoria con el producto registrado
+    # si es así, entonces se actualiza 
+    # de lo contrario, se registra una nueva categoría
+    def actualizarCategoriasProductos (idProducto, categoria_producto)
       begin
-        @producto = Producto.find(data[:id])
-        return @producto.update(data)
-      rescue ActiveRecord::RecordNotFound
-        @producto = Producto.new(data)
-        return @producto.save
+        CategoriaProducto.transaction do
+          @message
+          categoria_producto[:categorias].each do |categoria|
+            @categoria_productos = CategoriaProducto.where(producto_id: idProducto, categorium: set_categoria(categoria))
+            if @categoria_productos.exists? then
+              @categoriasProductos = armarDatos(categoria, idProducto)
+              if @categoriasProductos != false then
+                if @categoria_productos.update(@categoriasProductos) then 
+                  @message = 'Registro actualizado satisfactorio'
+                else
+                  return 'No se pudo actualizar las categorías del producto'
+                end
+              else 
+                return 'No se encontró la categoría' + ' ' + categoria + ' registrada'
+              end
+            else
+              @categoriasProduct = armarDatos(categoria, idProducto)
+              if @categoriasProduct != false then
+                @registerCategoriaProducto = CategoriaProducto.new(@categoriasProduct)
+                if @registerCategoriaProducto.save() == false then 
+                  @message = 'Registro satisfactorio'
+                else
+                  return 'No se pudo registrar las categorías del producto'
+                end 
+              else
+                return 'No se encontró la categoría' + ' ' + categoria + ' registrada'
+              end
+            end
+          end
+          return @message
+        end
+      rescue ActiveRecord::RecordNotSaved => e
+        raise ActiveRecord::Rollback
+        return e
+      rescue ActiveRecord::RecordInvalid => e
+        raise ActiveRecord::Rollback
+        return e
       end
     end
 
-    # Se valida primero si ya se encuentra una categoria_producto con el mismo id
-    # si es así, entonces se actualiza el dato
-    # de lo contrario, se crea uno nuevo
-    def guardarCategoriasProductos (data)
-      begin
-        @categoriaProducto = CategoriaProducto.find(data[:id])
-        return @categoriaProducto.update(data)
-      rescue ActiveRecord::RecordNotFound
-        @categoriaProducto = CategoriaProducto.new(data)
-        return @categoriaProducto.save
+    # Método que se encarga de validar si existe la categoría mediante el nombre
+    # si es así, arma el array con el producto y la categoría 
+    # de lo contrario devuelve un false
+    def armarDatos (categoria, idProducto)
+      @idCategoria = set_categoria(categoria)
+      if @idCategoria != false then
+        return @data = {producto_id: idProducto, categorium_id: @idCategoria[:id]}
+      else
+        return false
       end
     end
 end

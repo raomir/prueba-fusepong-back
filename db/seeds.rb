@@ -3,5 +3,32 @@
 #
 # Examples:
 #
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+Marca.create([
+    { nombre: "Adidas", descripcion: "fnejhrfbwjhrb", slogan: "cwj erhbwjeh", ciudad: 'Neiva', 
+      departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul"
+      email: "raomir@gmail.com", radio_de_cobertura: 4, social_media: "{[facebook: 'raomir', youtube:'raomir14']}"}, 
+    
+    { nombre: "Lacoste", descripcion: "fnejhrfbwjhrb", slogan: "cwj erhbwjeh", ciudad: 'Neiva', 
+      departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul"
+      email: "raomir@gmail.com", radio_de_cobertura: 4, social_media: "{[facebook: 'raomir', youtube:'raomir14']}"}, 
+
+    { nombre: "Samsung", descripcion: "fnejhrfbwjhrb", slogan: "cwj erhbwjeh", ciudad: 'Neiva', 
+      departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul"
+      email: "raomir@gmail.com", radio_de_cobertura: 4, social_media: "{[facebook: 'raomir', youtube:'raomir14']}"}, 
+    
+    { nombre: "Lg", descripcion: "fnejhrfbwjhrb", slogan: "cwj erhbwjeh", ciudad: 'Neiva', 
+      departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul"
+      email: "raomir@gmail.com", radio_de_cobertura: 4, social_media: "{[facebook: 'raomir', youtube:'raomir14']}"}, 
+
+    { nombre: "Lacoste", descripcion: "fnejhrfbwjhrb", slogan: "cwj erhbwjeh", ciudad: 'Neiva', 
+      departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul"
+      email: "raomir@gmail.com", radio_de_cobertura: 4, social_media: "{[facebook: 'raomir', youtube:'raomir14']}"}, 
+])
+
+Categorium.create([
+    { nombre: "Deportes"},
+    { nombre: "Vehículos"},
+    { nombre: "Tecnología"},
+    { nombre: "Inmuebles"},
+    { nombre: "Moda"},
+])
