@@ -3,6 +3,14 @@
 #
 # Examples:
 #
+Categorium.create([
+  { nombre: "Deportes"},
+  { nombre: "Vehículos"},
+  { nombre: "Tecnología"},
+  { nombre: "Inmuebles"},
+  { nombre: "Moda"}
+])
+
 Marca.create([
     { nombre: "Adidas", descripcion: "fnejhrfbwjhrb", slogan: "cwj erhbwjeh", ciudad: 'Neiva', 
       departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul",
@@ -23,12 +31,4 @@ Marca.create([
     { nombre: "Lacoste", descripcion: "fnejhrfbwjhrb", slogan: "cwj erhbwjeh", ciudad: 'Neiva', 
       departamento: "Huila", pais: "Colombia", visible: true, color_principal: "rojo", color_secundario: "azul",
       email: "raomir@gmail.com", radio_de_cobertura: 4, social_media: "{[facebook: 'raomir', youtube:'raomir14']}", categorium_id: 1} 
-])
-
-Categorium.create([
-    { nombre: "Deportes"},
-    { nombre: "Vehículos"},
-    { nombre: "Tecnología"},
-    { nombre: "Inmuebles"},
-    { nombre: "Moda"}
 ])
