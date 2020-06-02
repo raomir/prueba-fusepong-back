@@ -10,15 +10,15 @@ class ProductosController < ApplicationController
 
   # GET /productos/1
   def show
-
-    render json: @producto, categorias: true
+    render json: @producto
   end
 
   # POST /productos
   def create
     @producto
     producto_params['producto'].each do |n|
-      @producto = guardarProductos(n, producto_params)
+      @data = armarJsonProducto(n)
+      @producto = guardarProductos(@data, n[:categorias])
     end
     render json: @producto
   end
@@ -27,6 +27,7 @@ class ProductosController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_producto
       @producto = Producto.where(marca_id: params[:id])
+      return @producto
     end
 
     def set_categoria (nombre)
@@ -44,8 +45,7 @@ class ProductosController < ApplicationController
         data: {
           producto: [ 
             :id, :nombre, :tipo_producto, :descripcion, :visible, :score, :referencia, 
-            :precio, :cantidad,  :on_sale, :precio_anterior, :marca_id, :composicion],
-            categorias: []
+            :precio, :cantidad,  :on_sale, :precio_anterior, :marca_id, :composicion, :categorias]
           }
         ).require(:data)
     end
@@ -90,18 +90,20 @@ class ProductosController < ApplicationController
     def guardarCategoriasProductos (idProducto, categoria_producto)
       begin
         CategoriaProducto.transaction do
-          categoria_producto[:categorias].each do |categoria|
+            @cat = JSON.parse(categoria_producto)
+            @cat.each do |categoria|
               @categoriasProductos = armarDatos(categoria, idProducto)
-              if @categoriasProductos != false then
-                @categoriaProducto = CategoriaProducto.new(@categoriasProductos)
-                if @categoriaProducto.save() == false then 
-                  return 'No se pudo registrar las categorías del producto'
+                if @categoriasProductos != false then
+                  @categoriaProducto = CategoriaProducto.new(@categoriasProductos)
+                  if @categoriaProducto.save() then 
+                    @message = 'Registro satisfactorio'
+                  end
+                else 
+                  return 'No se encontró la categoría' + ' ' + categoria + ' registrada'
                 end
-              else 
-                return 'No se encontró la categoría' + ' ' + categoria + ' registrada'
               end
+              return 'Registro satisfactorio'
           end
-          return 'Registro satisfactorio'
         end
       rescue ActiveRecord::RecordNotSaved => e
         raise ActiveRecord::Rollback
@@ -119,7 +121,8 @@ class ProductosController < ApplicationController
       begin
         CategoriaProducto.transaction do
           @message
-          categoria_producto[:categorias].each do |categoria|
+          @cat = JSON.parse(categoria_producto)
+          @cat.each do |categoria|
             @categoria_productos = CategoriaProducto.where(producto_id: idProducto, categorium: set_categoria(categoria))
             if @categoria_productos.exists? then
               @categoriasProductos = armarDatos(categoria, idProducto)
@@ -136,7 +139,7 @@ class ProductosController < ApplicationController
               @categoriasProduct = armarDatos(categoria, idProducto)
               if @categoriasProduct != false then
                 @registerCategoriaProducto = CategoriaProducto.new(@categoriasProduct)
-                if @registerCategoriaProducto.save() == false then 
+                if @registerCategoriaProducto.save() then 
                   @message = 'Registro satisfactorio'
                 else
                   return 'No se pudo registrar las categorías del producto'
@@ -168,4 +171,13 @@ class ProductosController < ApplicationController
         return false
       end
     end
+
+    def armarJsonProducto (data)
+      @data = {
+        cantidad: data[:cantidad], composicion: data[:composicion], descripcion: data[:descripcion],
+        marca_id: data[:marca_id], nombre: data[:nombre], on_sale: data[:on_sale], precio: data[:precio],
+        precio_anterior: data[:precio_anterior], referencia: data[:referencia], score: data[:score],
+        tipo_producto: data[:tipo_producto], visible: data[:visible]
+      }
+      return @data
 end
